@@ -31,6 +31,17 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
+// Health check route
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'success',
+        message: 'Server is healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV
+    });
+});
+
 // Root route
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to StackForge API' });
