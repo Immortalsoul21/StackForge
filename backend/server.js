@@ -12,7 +12,7 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
     console.warn('WARNING: Supabase credentials missing in .env');
 }
 
-app.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-    console.log('Using Supabase as the database provider');
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
