@@ -4,32 +4,31 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const errorHandler = require('./middlewares/errorMiddleware');
 
-// Route files
 const authRoutes = require('./routes/authRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 
 const app = express();
 
-// Body parser
+app.use(helmet());
 app.use(express.json());
 
-// Enable CORS - Allow any port on your EC2 IP
+const allowedOrigins = [
+    'http://localhost',
+    'http://127.0.0.1',
+    'http://13.218.231.87'
+];
+
 app.use(cors({
-    origin: function(origin, callback) {
-        // Allow requests with no origin (like mobile apps, Postman, or curl)
+    origin: function (origin, callback) {
         if (!origin) return callback(null, true);
-        
-        // Allow any URL starting with http://13.218.231.87
-        if (origin.startsWith('http://13.218.231.87')) {
-            return callback(null, true);
-        }
-        
-        // Also allow localhost for development
-        if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
-            return callback(null, true);
-        }
-        
-        // Block other origins
+
+        const isAllowed = allowedOrigins.some(allowed =>
+            origin.startsWith(allowed)
+        );
+
+        if (isAllowed) return callback(null, true);
+
+        console.error('Blocked by CORS:', origin);
         return callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
@@ -37,35 +36,25 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Set security headers
-app.use(helmet());
+app.options('*', cors());
 
-// Dev logging middleware
+// Debug (temporary)
+app.use((req, res, next) => {
+    console.log('Origin:', req.headers.origin);
+    next();
+});
+
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-// Mount routers
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
-// Health check route
 app.get('/health', (req, res) => {
-    res.status(200).json({
-        status: 'success',
-        message: 'Server is healthy',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        environment: process.env.NODE_ENV
-    });
+    res.json({ status: 'ok' });
 });
 
-// Root route
-app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to StackForge API' });
-});
-
-// Centralized error handler
 app.use(errorHandler);
 
 module.exports = app;
