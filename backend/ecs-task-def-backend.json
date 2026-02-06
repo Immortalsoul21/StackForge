@@ -1,0 +1,35 @@
+{
+  "family": "stackforge-backend-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::557485611178:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "backend",
+      "image": "557485611178.dkr.ecr.us-east-1.amazonaws.com/stackforge-backend",
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+  "secrets": [
+  {
+    "name": "SUPABASE_URL",
+    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend:SUPABASE_URL::"
+  },
+  {
+    "name": "SUPABASE_KEY",
+    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend:SUPABASE_KEY::"
+  },
+  {
+    "name": "FRONTEND_URL",
+    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend:FRONTEND_URL::"
+  }
+],
+      "essential": true
+    }
+  ]
+}

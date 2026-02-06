@@ -1,0 +1,52 @@
+name: Deploy Backend to ECS
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "backend/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::557485611178:role/GitHubECSDeployRole
+        aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build and push Docker image
+      id: build
+      run: |
+        IMAGE_URI=557485611178.dkr.ecr.us-east-1.amazonaws.com/stackforge-backend:${{ github.sha }}
+        docker build -t $IMAGE_URI backend
+        docker push $IMAGE_URI
+        echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
+
+    - name: Render ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: backend/ecs-task-def-backend.json
+        container-name: backend
+        image: ${{ steps.build.outputs.image }}
+
+    - name: Deploy to ECS
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: stackforge-backend-service
+        cluster: stackforge-cluster
+        wait-for-service-stability: true

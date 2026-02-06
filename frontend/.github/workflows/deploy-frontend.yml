@@ -1,0 +1,58 @@
+name: Deploy Frontend to ECS
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "frontend/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::557485611178:role/GitHubECSDeployRole
+        aws-region: us-east-1
+
+    - uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Fetch frontend secrets
+      run: |
+        API_URL=$(aws secretsmanager get-secret-value \
+          --secret-id stackforge-frontend \
+          --query SecretString --output text | jq -r '.VITE_API_URL')
+        echo "API_URL=$API_URL" >> $GITHUB_ENV
+
+    - name: Build and push Docker image
+      id: build
+      run: |
+        IMAGE_URI=557485611178.dkr.ecr.us-east-1.amazonaws.com/stackforge-frontend:${{ github.sha }}
+        docker build \
+          --build-arg VITE_API_URL=$API_URL \
+          -t $IMAGE_URI frontend
+        docker push $IMAGE_URI
+        echo "image=$IMAGE_URI" >> $GITHUB_OUTPUT
+
+    - name: Render task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: frontend/ecs-task-def-frontend.json
+        container-name: frontend
+        image: ${{ steps.build.outputs.image }}
+
+    - name: Deploy to ECS
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: stackforge-frontend-service
+        cluster: stackforge-cluster
+        wait-for-service-stability: true
