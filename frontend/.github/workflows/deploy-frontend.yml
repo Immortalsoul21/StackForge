@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - "frontend/**"
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -26,9 +27,14 @@ jobs:
 
     - name: Fetch frontend secrets
       run: |
-        API_URL=$(aws secretsmanager get-secret-value \
+        SECRET_JSON=$(aws secretsmanager get-secret-value \
           --secret-id stackforge-frontend \
-          --query SecretString --output text | jq -r '.VITE_API_URL')
+          --query SecretString --output text)
+        if [ $? -ne 0 ]; then
+          echo "Failed to fetch secrets from AWS Secrets Manager"
+          exit 1
+        fi
+        API_URL=$(echo $SECRET_JSON | jq -r '.VITE_API_URL')
         echo "API_URL=$API_URL" >> $GITHUB_ENV
 
     - name: Build and push Docker image
