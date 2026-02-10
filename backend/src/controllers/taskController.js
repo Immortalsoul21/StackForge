@@ -86,7 +86,7 @@ exports.updateTask = async (req, res, next) => {
             .single();
 
         if (error || !updatedTask) {
-            return res.status(404).json({ success: false, message: 'Task not found or not authorized' });
+            return res.status(400).json({ success: false, message: 'Task not found or not authorized' });
         }
 
         res.status(200).json({

@@ -21,7 +21,7 @@ const RegisterPage = () => {
         setError('');
 
         if (formData.password.length < 6) {
-            setError('Password must be at least 6 characters long');
+            setError('Password must be at least 6 characters long to be used as password');
             return;
         }
 
