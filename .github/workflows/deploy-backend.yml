@@ -48,6 +48,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: stackforge-backend-service
+        service: stackforge-backend-task-service-y80e9oo5
         cluster: stackforge-cluster
         wait-for-service-stability: true
