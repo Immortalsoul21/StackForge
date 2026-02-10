@@ -25,7 +25,7 @@ jobs:
         role-to-assume: arn:aws:iam::557485611178:role/GitHubECSDeployRole
         aws-region: us-east-1
     - name: Ensure ECS Task Execution Role exists
-        run: |
+      run: |
           if ! aws iam get-role --role-name ecsTaskExecutionRole 2>/dev/null; then
             echo "Role doesn't exist, creating it..."
             

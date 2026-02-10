@@ -89,7 +89,7 @@ exports.updateTask = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Task not found or not authorized' });
         }
 
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             data: updatedTask,
         });
@@ -111,7 +111,7 @@ exports.deleteTask = async (req, res, next) => {
 
         if (error) throw error;
 
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             message: 'Task removed',
         });
