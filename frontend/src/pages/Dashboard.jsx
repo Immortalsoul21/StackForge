@@ -34,7 +34,7 @@ const Dashboard = () => {
             const response = await taskService.getTasks();
             setTasks(response.data);
         } catch (err) {
-            console.error('Failed to fetch tasks');
+            console.error('Failed to fetch tasks for the user');
         } finally {
             setIsLoading(false);
         }

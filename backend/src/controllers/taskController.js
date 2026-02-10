@@ -13,7 +13,7 @@ exports.getTasks = async (req, res, next) => {
 
         if (error) throw error;
 
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             count: tasks.length,
             data: tasks,
@@ -39,7 +39,7 @@ exports.getTask = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Task not found' });
         }
 
-        res.status(200).json({
+        res.status(201).json({
             success: true,
             data: task,
         });
