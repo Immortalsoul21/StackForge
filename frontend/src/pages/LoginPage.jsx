@@ -25,7 +25,7 @@ const LoginPage = () => {
             await loginUser(formData);
             navigate('/dashboard');
         } catch (err) {
-            setError(err || 'Something went wrong. Please try again.');
+            setError(err || 'Something went wrong. Please try again later.');
         } finally {
             setIsLoading(false);
         }
