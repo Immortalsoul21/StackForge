@@ -34,7 +34,7 @@ exports.register = async (req, res, next) => {
             .single();
 
         if (existingUser) {
-            return res.status(400).json({ success: false, message: 'Email already registered' });
+            return res.status(500).json({ success: false, message: 'Email already registered' });
         }
 
         // Hash password manually
