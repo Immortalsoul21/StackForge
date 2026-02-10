@@ -22,33 +22,61 @@ jobs:
       with:
         role-to-assume: arn:aws:iam::557485611178:role/GitHubECSDeployRole
         aws-region: us-east-1
+    
     - name: Ensure ECS Task Execution Role exists
       run: |
-          if ! aws iam get-role --role-name ecsTaskExecutionRole 2>/dev/null; then
-            echo "Role doesn't exist, creating it..."
-            
-            # Create the role
-            aws iam create-role \
-              --role-name ecsTaskExecutionRole \
-              --assume-role-policy-document '{
-                "Version": "2012-10-17",
-                "Statement": [{
-                  "Effect": "Allow",
-                  "Principal": {"Service": "ecs-tasks.amazonaws.com"},
-                  "Action": "sts:AssumeRole"
-                }]
-              }'
-            
-            # Attach the required policy
-            aws iam attach-role-policy \
-              --role-name ecsTaskExecutionRole \
-              --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-            
-            echo "Role created successfully"
-          else
-            echo "Role already exists, skipping creation"
-          fi
-
+        if ! aws iam get-role --role-name ecsTaskExecutionRole 2>/dev/null; then
+          echo "Role doesn't exist, creating it..."
+          
+          # Create the role
+          aws iam create-role \
+            --role-name ecsTaskExecutionRole \
+            --assume-role-policy-document '{
+              "Version": "2012-10-17",
+              "Statement": [{
+                "Effect": "Allow",
+                "Principal": {"Service": "ecs-tasks.amazonaws.com"},
+                "Action": "sts:AssumeRole"
+              }]
+            }'
+          
+          # Attach the required policy
+          aws iam attach-role-policy \
+            --role-name ecsTaskExecutionRole \
+            --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+          
+          echo "Role created successfully"
+        else
+          echo "Role already exists, skipping creation"
+        fi
+        
+        # Check if Secrets Manager policy already exists
+        if ! aws iam get-role-policy --role-name ecsTaskExecutionRole --policy-name SecretsManagerAccess 2>/dev/null; then
+          echo "Adding Secrets Manager permissions..."
+          
+          # Add inline policy for Secrets Manager access
+          aws iam put-role-policy \
+            --role-name ecsTaskExecutionRole \
+            --policy-name SecretsManagerAccess \
+            --policy-document '{
+              "Version": "2012-10-17",
+              "Statement": [{
+                "Effect": "Allow",
+                "Action": [
+                  "secretsmanager:GetSecretValue"
+                ],
+                "Resource": [
+                  "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend*",
+                  "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-frontend*"
+                ]
+              }]
+            }'
+          
+          echo "Secrets Manager permissions added successfully"
+        else
+          echo "Secrets Manager permissions already exist, skipping"
+        fi
+    
     - uses: aws-actions/amazon-ecr-login@v2
 
     - name: Fetch frontend secrets

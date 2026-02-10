@@ -18,15 +18,15 @@
   "secrets": [
   {
     "name": "SUPABASE_URL",
-    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend:SUPABASE_URL::"
+    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:SUPABASE_URL::"
   },
   {
     "name": "SUPABASE_KEY",
-    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend:SUPABASE_KEY::"
+    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:SUPABASE_KEY::"
   },
   {
     "name": "FRONTEND_URL",
-    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend:FRONTEND_URL::"
+    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:FRONTEND_URL::"
   }
 ],
       "essential": true

@@ -15,6 +15,12 @@
           "protocol": "tcp"
         }
       ],
+      "secrets": [
+  {
+    "name": "VITE_API_URL",
+    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-frontend-EL2J0r:VITE_API_URL::"
+  }
+],
       "essential": true
     }
   ]
