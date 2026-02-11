@@ -16,7 +16,7 @@ const allowedOrigins = [
     'http://localhost',
     'http://127.0.0.1',
     'http://13.218.231.87',
-    'http://stackforge-alb-1621366148.us-east-1.elb.amazonaws.com'
+    "http://stackforge-alb-1621366148.us-east-1.elb.amazonaws.com/"
 ];
 
 app.use(cors({
@@ -52,7 +52,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 

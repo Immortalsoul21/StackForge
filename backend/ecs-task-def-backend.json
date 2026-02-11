@@ -27,7 +27,12 @@
   {
     "name": "FRONTEND_URL",
     "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:FRONTEND_URL::"
+  },
+  {
+    "name": "PORT",
+    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:PORT::"
   }
+
 ],
       "essential": true
     }
