@@ -31,7 +31,7 @@ const RegisterPage = () => {
             await registerUser(formData);
             navigate('/dashboard');
         } catch (err) {
-            setError(err || 'Registration failed. Please try again later after sometimes.');
+            setError(err || 'Registration failed ! Please try again later after sometimes.');
         } finally {
             setIsLoading(false);
         }
