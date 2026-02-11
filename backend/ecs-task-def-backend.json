@@ -1,5 +1,5 @@
 {
-  "family": "stackforge-backend-task",
+  "family": "stackforge-backend-task-3", 
   "networkMode": "awsvpc",
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
@@ -8,32 +8,40 @@
   "containerDefinitions": [
     {
       "name": "backend",
-      "image": "557485611178.dkr.ecr.us-east-1.amazonaws.com/stackforge-backend",
+      "image": "557485611178.dkr.ecr.us-east-1.amazonaws.com/stackforge-backend:latest",
       "portMappings": [
         {
           "containerPort": 3000,
           "protocol": "tcp"
         }
       ],
-  "secrets": [
-  {
-    "name": "SUPABASE_URL",
-    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:SUPABASE_URL::"
-  },
-  {
-    "name": "SUPABASE_KEY",
-    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:SUPABASE_KEY::"
-  },
-  {
-    "name": "FRONTEND_URL",
-    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:FRONTEND_URL::"
-  },
-  {
-    "name": "PORT",
-    "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:PORT::"
-  }
-
-],
+      "secrets": [
+        {
+          "name": "SUPABASE_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:SUPABASE_URL::"
+        },
+        {
+          "name": "SUPABASE_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:SUPABASE_KEY::"
+        },
+        {
+          "name": "FRONTEND_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:FRONTEND_URL::"
+        },
+        {
+          "name": "PORT",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:PORT::"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/stackforge-backend",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-create-group": "true"
+        }
+      },
       "essential": true
     }
   ]
