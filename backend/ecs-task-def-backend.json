@@ -1,7 +1,9 @@
 {
-  "family": "stackforge-backend-task-3", 
+  "family": "stackforge-backend-task-3",
   "networkMode": "awsvpc",
-  "requiresCompatibilities": ["FARGATE"],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
   "cpu": "256",
   "memory": "512",
   "executionRoleArn": "arn:aws:iam::557485611178:role/service-role/ecsTaskExecutionRole",
@@ -31,6 +33,10 @@
         {
           "name": "PORT",
           "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:PORT::"
+        },
+        {
+          "name": "JWT_SECRET",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:557485611178:secret:stackforge-backend-mwIQUu:JWT_SECRET::"
         }
       ],
       "logConfiguration": {
