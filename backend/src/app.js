@@ -15,7 +15,8 @@ app.use(express.json());
 const allowedOrigins = [
     'http://localhost',
     'http://127.0.0.1',
-    'http://13.218.231.87'
+    'http://13.218.231.87',
+    'http://stackforge-alb-1621366148.us-east-1.elb.amazonaws.com'
 ];
 
 app.use(cors({
