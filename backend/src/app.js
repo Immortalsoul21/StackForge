@@ -23,13 +23,15 @@ app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
 
-        const isAllowed = allowedOrigins.some(allowed =>
-            origin.startsWith(allowed)
-        );
+        // Trim whitespace from the origin
+        const trimmedOrigin = origin.trim();
 
-        if (isAllowed) return callback(null, true);
+        if (allowedOrigins.includes(trimmedOrigin)) {
+            return callback(null, true);
+        }
 
-        console.error('Blocked by CORS:', origin);
+        console.error('Blocked by CORS:', `"${origin}"`); // Quotes will show spaces
+        console.error('Trimmed origin:', `"${trimmedOrigin}"`);
         return callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
