@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: stackforge
+  labels:
+    app: backend
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+        tier: backend
+    spec:
+      containers:
+        - name: backend
+          image: backendkubernetesversion:v1
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: SUPABASE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: stackforge-secret
+                  key: SUPABASE_KEY
+            - name: SUPABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: stackforge-secret
+                  key: SUPABASE_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: stackforge-secret
+                  key: JWT_SECRET
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: stackforge-secret
+                  key: PORT
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: stackforge-secret
+                  key: NODE_ENV
+            - name: FRONTEND_URL
+              valueFrom:
+                secretKeyRef:
+                  name: stackforge-secret
+                  key: FRONTEND_URL
+            - name: VITE_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: stackforge-secret
+                  key: VITE_API_URL
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
