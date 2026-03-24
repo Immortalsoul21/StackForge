@@ -147,4 +147,4 @@ Fully automated deployments via **GitHub Actions**. Every push to the main branc
 ---
 
 ## 📜 License
-This project was developed for educational purposes to master AWS Cloud Infrastructure.
+Built to production standards with full CI/CD, Kubernetes orchestration, and cloud-native security.
